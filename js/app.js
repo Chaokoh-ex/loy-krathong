@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=10';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=10';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=10';
-import { launchFireworks } from './fireworks.js?v=10';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar } from './scene.js?v=10';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=11';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=11';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=11';
+import { launchFireworks } from './fireworks.js?v=11';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar } from './scene.js?v=11';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -28,8 +28,18 @@ $('logo').onerror = () => $('logo').remove();
 
 function fitScene() {
   const svg = $('scene');
-  const wide = innerWidth / innerHeight > 590 / 844;
-  svg.setAttribute('preserveAspectRatio', wide ? 'xMidYMax meet' : 'xMidYMax slice');
+  const aspect = innerWidth / innerHeight;
+  const wide = aspect > 590 / 844;
+  if (wide) {
+    const y0 = 36, H = 684, W = H * aspect;
+    svg.setAttribute('viewBox', `${(195 - W / 2).toFixed(1)} ${y0} ${W.toFixed(1)} ${H}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+    $('moon').setAttribute('transform', 'translate(470 120)');
+  } else {
+    svg.setAttribute('viewBox', '-100 -124 590 844');
+    svg.setAttribute('preserveAspectRatio', 'xMidYMax slice');
+    $('moon').removeAttribute('transform');
+  }
   const m = svg.getScreenCTM();
   if (!m) return;
   const top = m.d * 462 + m.f;

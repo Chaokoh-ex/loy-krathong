@@ -18,9 +18,9 @@ function rng(seed) {
 
 export function drawStars(g) {
   const r = rng(7);
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 220; i++) {
     const c = el('circle', {
-      cx: (-100 + r() * 590).toFixed(1), cy: (-120 + r() * 400).toFixed(1),
+      cx: (i < 90 ? -100 + r() * 590 : -800 + r() * 1990).toFixed(1), cy: (-120 + r() * 400).toFixed(1),
       r: (0.4 + r() * 1.1).toFixed(2), opacity: (0.4 + r() * 0.6).toFixed(2),
     }, g);
     if (i % 4 === 0) { c.classList.add('twinkle'); c.style.animationDelay = (-r() * 4).toFixed(2) + 's'; }
@@ -46,8 +46,8 @@ export function drawCityWindows(g) {
 
 export function drawLanterns(g) {
   const r = rng(23);
-  for (let i = 0; i < 9; i++) {
-    const outer = el('g', { transform: `translate(${(-60 + r() * 520).toFixed(0)} ${(380 + r() * 60).toFixed(0)})` }, g);
+  for (let i = 0; i < 18; i++) {
+    const outer = el('g', { transform: `translate(${(i < 9 ? -60 + r() * 520 : -600 + r() * 1600).toFixed(0)} ${(380 + r() * 60).toFixed(0)})` }, g);
     const inner = el('g', { class: 'lantern' }, outer);
     const s = 0.6 + r() * 0.7;
     inner.style.setProperty('--dx', ((r() - 0.5) * 140).toFixed(0) + 'px');
