@@ -66,9 +66,17 @@ function makeNode(k, isNew) {
   return el;
 }
 
+const MAX_VISIBLE = () => (innerWidth < 700 ? 50 : 120);
+function visibleIds() {
+  const ids = new Set(list.slice(-MAX_VISIBLE()).map(k => k.id));
+  if (mine && list.some(k => k.id === mine)) ids.add(mine);
+  return ids;
+}
+
 function render(added, animate) {
   const river = $('river');
-  const keep = new Set(list.map(k => k.id));
+  const keep = visibleIds();
+  added = added.filter(k => keep.has(k.id));
   for (const [id, el] of nodes) if (!keep.has(id)) { el.remove(); nodes.delete(id); }
   for (const k of added) {
     if (nodes.has(k.id)) continue;
@@ -92,10 +100,9 @@ async function fullLoad() {
     .order('created_at', { ascending: false }).limit(500);
   if (error) return;
   const fresh = data.reverse();
-  const before = new Set(list.map(k => k.id));
   list = fresh;
   if (fresh.length) lastSeen = fresh[fresh.length - 1].created_at;
-  render(fresh.filter(k => !before.has(k.id)), false);
+  render(fresh, false);
   setCount(count ?? fresh.length);
 }
 
