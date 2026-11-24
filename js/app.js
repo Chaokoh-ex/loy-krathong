@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=23';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=23';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=23';
-import { launchFireworks, ambientFireworks } from './fireworks.js?v=23';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=23';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=25';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=25';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=25';
+import { launchFireworks, ambientFireworks } from './fireworks.js?v=25';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=25';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -37,10 +37,8 @@ for (const id of ['billboard', 'building', 'tree', 'reflect', 'moon', 'moonRefle
   ORIG[id] = $(id).getAttribute('transform');
 function showEdge(on, x0, W) {
   $('fair').style.display = on ? '' : 'none';
-  $('goldenMount').style.display = on ? '' : 'none';
   if (on) {
     setT('fair', `translate(${(x0 + W * 0.065).toFixed(1)} 446) scale(1.15)`);
-    setT('goldenMount', `translate(${(x0 + W * 0.93).toFixed(1)} 446) scale(1.15)`);
   }
 }
 function setT(id, t) { t ? $(id).setAttribute('transform', t) : $(id).removeAttribute('transform'); }
