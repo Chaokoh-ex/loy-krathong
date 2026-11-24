@@ -38,7 +38,7 @@ for (const id of ['billboard', 'building', 'tree', 'reflect', 'moon', 'moonRefle
 function showEdge(on, x0, W) {
   $('fair').style.display = on ? '' : 'none';
   if (on) {
-    setT('fair', `translate(${(x0 + W * 0.065).toFixed(1)} 446) scale(1.15)`);
+    setT('fair', `translate(${(x0 + W * 0.085).toFixed(1)} 446) scale(1.15)`);
   }
 }
 function setT(id, t) { t ? $(id).setAttribute('transform', t) : $(id).removeAttribute('transform'); }
@@ -53,18 +53,18 @@ function fitScene() {
     svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
     const split = aspect > 1.15;
     if (split) {
-      const left = x0 + W * 0.24, right = x0 + W * 0.7;
+      const left = x0 + W * 0.3, right = x0 + W * 0.74;
       const bs = 1.3, hs = 1.34;
       setT('billboard', `translate(${left.toFixed(1)} 526) scale(${bs.toFixed(2)}) translate(-85 -446)`);
       setT('building', `translate(${right.toFixed(1)} 446) scale(${hs.toFixed(2)}) translate(-243 -446)`);
       setT('tree', `translate(${(right + 105 * hs / 1.32).toFixed(1)} 446) scale(${(1.2 * hs / 1.32).toFixed(2)}) translate(-320 -446)`);
       setT('reflect', `translate(${right.toFixed(1)} 0) scale(${(hs / 1.32).toFixed(2)} 1) translate(-252 0)`);
-      const mdx = x0 + W * 0.47 - 66;
+      const mdx = x0 + W * 0.52 - 66;
       setT('moon', `translate(${mdx.toFixed(1)} 110)`);
       setT('moonReflect', `translate(${mdx.toFixed(1)} 0)`);
-      setT('palmA', `translate(${(x0 + W * 0.405).toFixed(1)} 446) scale(.9)`);
-      setT('palmB', `translate(${(x0 + W * 0.93).toFixed(1)} 446)`);
-      setT('bridge', `translate(${(x0 + W * 0.47 - 120).toFixed(1)} 446) scale(1.15) translate(0 -446)`);
+      setT('palmA', `translate(${(x0 + W * 0.43).toFixed(1)} 446) scale(.9)`);
+      setT('palmB', `translate(${(x0 + W * 0.95).toFixed(1)} 446)`);
+      setT('bridge', `translate(${(x0 + W * 0.52 - 120).toFixed(1)} 446) scale(1.15) translate(0 -446)`);
       showEdge(true, x0, W);
     } else {
       for (const id in ORIG) setT(id, ORIG[id]);
