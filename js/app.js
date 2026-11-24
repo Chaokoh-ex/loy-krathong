@@ -67,7 +67,7 @@ function fitScene() {
     setT('building', `translate(${bx.toFixed(1)} 446) scale(1.32) translate(-243 -446)`);
     setT('tree', `translate(${(bx + 104).toFixed(1)} 446) scale(1.2) translate(-320 -446)`);
     setT('reflect', `translate(${bx.toFixed(1)} 0) translate(-252 0)`);
-    setT('billboard', `translate(${(x0 + W * 0.27).toFixed(1)} 496) scale(.95) translate(-85 -446)`);
+    setT('billboard', `translate(${(x0 + W * 0.27).toFixed(1)} 540) scale(.95) translate(-85 -446)`);
     setT('moon', `translate(${(x0 + 30).toFixed(1)} 50)`);
     setT('moonReflect', `translate(${(x0 + 30).toFixed(1)} 0)`);
     setT('palmA', `translate(${(x0 + W * 0.5).toFixed(1)} 446) scale(.85)`);
