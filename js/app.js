@@ -3,7 +3,7 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.j
 import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=25';
 import { krathongSVG, STYLE_LABELS } from './krathong.js?v=25';
 import { launchFireworks, ambientFireworks } from './fireworks.js?v=25';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=25';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=26';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
