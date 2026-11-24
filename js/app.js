@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=13';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=13';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=13';
-import { launchFireworks } from './fireworks.js?v=13';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights } from './scene.js?v=13';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=14';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=14';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=14';
+import { launchFireworks } from './fireworks.js?v=14';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights } from './scene.js?v=14';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -59,9 +59,19 @@ function fitScene() {
       setT('moonReflect', 'translate(470 0)');
     }
   } else {
-    svg.setAttribute('viewBox', '-100 -124 590 844');
+    const H = 780, W = H * aspect, x0 = 205 - W / 2;
+    svg.setAttribute('viewBox', `${x0.toFixed(1)} -60 ${W.toFixed(1)} ${H}`);
     svg.setAttribute('preserveAspectRatio', 'xMidYMax slice');
     for (const id in ORIG) setT(id, ORIG[id]);
+    const bx = x0 + W * 0.66;
+    setT('building', `translate(${bx.toFixed(1)} 446) scale(1.32) translate(-243 -446)`);
+    setT('tree', `translate(${(bx + 104).toFixed(1)} 446) scale(1.2) translate(-320 -446)`);
+    setT('reflect', `translate(${bx.toFixed(1)} 0) translate(-252 0)`);
+    setT('billboard', `translate(${(x0 + W * 0.27).toFixed(1)} 496) scale(.95) translate(-85 -446)`);
+    setT('moon', `translate(${(x0 + 30).toFixed(1)} 50)`);
+    setT('moonReflect', `translate(${(x0 + 30).toFixed(1)} 0)`);
+    setT('palmA', `translate(${(x0 + W * 0.5).toFixed(1)} 446) scale(.85)`);
+    setT('palmB', `translate(${(x0 + W - 6).toFixed(1)} 446)`);
   }
   const m = svg.getScreenCTM();
   if (!m) return;
