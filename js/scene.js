@@ -36,6 +36,7 @@ export function startBillboard(productsG, logosG, base) {
   const w = 104 / LOGOS.length;
   LOGOS.forEach((l, i) => {
     const el = img(base + 'logos/' + l, 22 + i * w + 3, 318, w - 6, 18);
+    if (l === 'tcc.png') el.setAttribute('preserveAspectRatio', 'xMinYMid slice');
     el.addEventListener('error', () => el.remove());
     logosG.appendChild(el);
   });
