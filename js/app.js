@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=20';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=20';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=20';
-import { launchFireworks, ambientFireworks } from './fireworks.js?v=20';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=20';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=21';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=21';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=21';
+import { launchFireworks, ambientFireworks } from './fireworks.js?v=21';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=21';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -17,15 +17,17 @@ let mine = getMine(localStorage);
 const nodes = new Map();
 
 // ---------- scene ----------
-drawStars($('stars'));
-drawCityWindows($('cityWindows'));
-drawLanterns($('lanterns'));
+const lite = Math.min(innerWidth, innerHeight) < 700 && !screenMode;
+drawStars($('stars'), lite);
+drawCityWindows($('cityWindows'), lite);
+drawLanterns($('lanterns'), lite);
 drawWaves($('waves'));
 drawBridgeLights(document.querySelector('#bridge .bridgeLights'));
 shootingStar($('shoot'));
 ambientFireworks($('fx'));
 drawTreeLights($('treeLights'));
 drawBankPeople($('bankPeople'));
+if (lite) document.body.classList.add('lite');
 startBillboard($('bbProducts'), $('bbLogos'), ASSET_BASE);
 $('logo').src = 'assets/logos/tcc.png';
 $('logo').onerror = () => $('logo').remove();
@@ -202,6 +204,23 @@ async function poll() {
   }
 }
 
+let mineSetAt = 0;
+async function idCheck() {
+  const { data, error, count } = await sb.from('krathongs').select('id', { count: 'exact' })
+    .order('created_at', { ascending: false }).limit(500);
+  if (error) return;
+  const alive = new Set(data.map(r => r.id));
+  const before = list.length;
+  list = list.filter(k => alive.has(k.id));
+  if (list.length !== before) render([], false);
+  setCount(count ?? data.length);
+  if (mine && !alive.has(mine) && data.length < 500 && Date.now() - mineSetAt > 60000) {
+    mine = null;
+    try { localStorage.removeItem('tcc-lk-2569-mine'); } catch {}
+    refreshCta();
+  }
+}
+
 // ---------- form ----------
 let style = null;
 function buildStyles() {
@@ -224,9 +243,12 @@ function buildStyles() {
 
 function showErr(field, msg) { document.querySelector(`.err[data-for="${field}"]`).textContent = msg || ''; }
 
+let doneTimer = 0;
 function refreshCta() {
   $('openForm').hidden = !!mine || screenMode;
   $('done').hidden = !mine || screenMode;
+  clearTimeout(doneTimer);
+  if (mine) doneTimer = setTimeout(() => { $('done').hidden = true; }, 5000);
 }
 
 $('openForm').addEventListener('click', () => { $('sheet').hidden = false; });
@@ -258,6 +280,7 @@ $('form').addEventListener('submit', async e => {
   window.lucide?.createIcons();
   if (error || !data) { $('sendErr').textContent = 'ส่งไม่สำเร็จ ลองอีกครั้งนะ'; return; }
   mine = data.id;
+  mineSetAt = Date.now();
   setMine(localStorage, mine);
   $('sheet').hidden = true;
   refreshCta();
@@ -301,5 +324,6 @@ buildStyles();
 refreshCta();
 window.lucide?.createIcons();
 await fullLoad();
+idCheck();
 setInterval(poll, POLL_MS);
-setInterval(fullLoad, 30000);
+setInterval(idCheck, 60000);

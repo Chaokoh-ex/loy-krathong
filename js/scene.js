@@ -18,21 +18,21 @@ function rng(seed) {
   return () => (s = (s * 16807) % 2147483647) / 2147483647;
 }
 
-export function drawStars(g) {
+export function drawStars(g, lite = false) {
   const r = rng(7);
-  for (let i = 0; i < 220; i++) {
+  for (let i = 0; i < (lite ? 90 : 220); i++) {
     const c = el('circle', {
       cx: (i < 90 ? -100 + r() * 590 : -800 + r() * 1990).toFixed(1), cy: (-120 + r() * 400).toFixed(1),
       r: (0.4 + r() * 1.1).toFixed(2), opacity: (0.4 + r() * 0.6).toFixed(2),
     }, g);
-    if (i % 4 === 0) { c.classList.add('twinkle'); c.style.animationDelay = (-r() * 4).toFixed(2) + 's'; }
+    if (i % (lite ? 8 : 4) === 0) { c.classList.add('twinkle'); c.style.animationDelay = (-r() * 4).toFixed(2) + 's'; }
   }
 }
 
 const FAR = [[-100, 270, 56, 176], [-40, 320, 46, 126], [10, 290, 40, 156], [60, 250, 54, 196], [118, 300, 40, 146],
   [350, 240, 50, 206], [400, 300, 60, 146], [470, 260, 70, 186], [-160, 300, 50, 146], [-280, 340, 100, 106], [560, 330, 110, 116]];
 
-export function drawCityWindows(g) {
+export function drawCityWindows(g, lite = false) {
   const r = rng(11);
   for (const [x, y, w] of FAR) {
     for (let wy = y + 8; wy < 432; wy += 12) {
@@ -40,15 +40,15 @@ export function drawCityWindows(g) {
         if (r() > 0.42) continue;
         const on = r();
         const rect = el('rect', { x: wx, y: wy, width: 4, height: 5, fill: on > 0.25 ? '#F7D28A' : '#9FB4FF', opacity: (0.35 + r() * 0.5).toFixed(2) }, g);
-        if (r() < 0.18) { rect.classList.add('twinkle'); rect.style.animationDuration = (2 + r() * 5).toFixed(1) + 's'; rect.style.animationDelay = (-r() * 6).toFixed(1) + 's'; }
+        if (r() < (lite ? 0.07 : 0.18)) { rect.classList.add('twinkle'); rect.style.animationDuration = (2 + r() * 5).toFixed(1) + 's'; rect.style.animationDelay = (-r() * 6).toFixed(1) + 's'; }
       }
     }
   }
 }
 
-export function drawLanterns(g) {
+export function drawLanterns(g, lite = false) {
   const r = rng(23);
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < (lite ? 7 : 18); i++) {
     const outer = el('g', { transform: `translate(${(i < 9 ? -60 + r() * 520 : -600 + r() * 1600).toFixed(0)} ${(380 + r() * 60).toFixed(0)})` }, g);
     const inner = el('g', { class: 'lantern' }, outer);
     const s = 0.6 + r() * 0.7;

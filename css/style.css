@@ -125,3 +125,5 @@ body.screen #cta,body.screen #counter{display:none}
 #scene .bankWave{transform-box:fill-box;transform-origin:0% 100%;animation:waveArm 1.3s ease-in-out infinite}
 #scene .candleGlow{animation:glowPulse 1.6s ease-in-out infinite}
 @keyframes glowPulse{0%,100%{fill-opacity:.16}50%{fill-opacity:.32}}
+body.lite #scene .bulbs circle,body.lite #scene .shim,body.lite #scene .flicker{animation:none}
+body.lite .k .flame{animation:none}
