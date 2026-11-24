@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>โปสเตอร์ QR — ลอยกระทงออนไลน์ TCC 2569</title>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500&family=Sarabun:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:#050C24;color:#FFF8E7;font-family:'Sarabun',sans-serif;display:flex;justify-content:center;padding:24px}
+.poster{width:min(100%,560px);aspect-ratio:3/4;background:#0E1A46;border:3px solid #F2B544;border-radius:24px;padding:36px 32px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden}
+.moon{position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:#FFF3C4;box-shadow:0 0 80px 30px #FFF3C455}
+h1{font-family:'Mitr',sans-serif;font-weight:500;font-size:38px;line-height:1.2;margin-top:10px;position:relative}
+.sub{color:#F2C46B;font-family:'Mitr',sans-serif;font-size:20px;margin:4px 0 22px}
+#qr{background:#fff;padding:16px;border-radius:16px}
+#qr img,#qr canvas{display:block;width:260px;height:260px}
+ol{list-style:none;padding:0;margin:22px 0 0;display:flex;gap:10px;font-size:16px}
+li{flex:1;background:#ffffff12;border-radius:12px;padding:10px 8px}
+li b{display:block;font-family:'Mitr',sans-serif;color:#F2B544;font-size:20px}
+.url{margin-top:auto;font-size:13px;color:#C9C3B2;word-break:break-all}
+@media print{body{background:#fff;padding:0}.poster{border-radius:0}}
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="moon"></div>
+  <h1>ลอยกระทง<br>ออนไลน์</h1>
+  <div class="sub">TCC 2569 · คืนนี้ 24 พ.ย.</div>
+  <div id="qr"></div>
+  <ol>
+    <li><b>1</b>สแกน QR</li>
+    <li><b>2</b>เลือกกระทง<br>เขียนคำอธิษฐาน</li>
+    <li><b>3</b>กดลอย<br>ดูพลุ!</li>
+  </ol>
+  <p class="url" id="url"></p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const url = new URL('./', location.href).href;
+document.getElementById('url').textContent = url;
+new QRCode(document.getElementById('qr'), { text: url, width: 520, height: 520, correctLevel: QRCode.CorrectLevel.M });
+</script>
+</body>
+</html>
