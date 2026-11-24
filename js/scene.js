@@ -62,33 +62,19 @@ export function drawLanterns(g) {
 
 export function drawWaves(g) {
   const r = rng(31);
-  const bands = 7;
-  for (let i = 0; i < bands; i++) {
-    const t = i / (bands - 1);
-    const y = 462 + t * t * 230 + i * 6;
-    const half = 70 + t * 70;
-    const amp = 2 + t * 5;
-    let d = `M-1000 ${y.toFixed(1)} q${half / 2} ${(-amp).toFixed(1)} ${half} 0`;
-    for (let x = -1000 + half; x < 1400; x += half) d += ` t${half} 0`;
-    d += ` L1400 ${(y + 30 + t * 30).toFixed(1)} L-1000 ${(y + 30 + t * 30).toFixed(1)} Z`;
-    const p = el('path', { d, fill: i % 2 ? '#1B3A7A' : '#0A1A44', 'fill-opacity': (0.35 + t * 0.2).toFixed(2), class: 'swell' }, g);
-    p.style.setProperty('--per', (half * 2).toFixed(0) + 'px');
-    p.style.animationDuration = (14 + r() * 10).toFixed(1) + 's';
-    if (i % 2) p.style.animationDirection = 'reverse';
-  }
-  for (let i = 0; i < 46; i++) {
-    const t = r();
-    const y = 466 + t * t * 240;
-    const x = -100 + r() * 590;
-    const len = 4 + t * 16 + r() * 6;
-    const nearLight = (x > 130 && x < 370 && y < 560) || (x > 40 && x < 92);
-    const l = el('line', {
-      x1: x.toFixed(1), y1: y.toFixed(1), x2: (x + len).toFixed(1), y2: y.toFixed(1),
-      stroke: nearLight ? '#FFD98A' : '#8FB0FF', 'stroke-width': (0.8 + t * 1.4).toFixed(2),
-      'stroke-linecap': 'round', class: 'glint',
+  for (let i = 0; i < 200; i++) {
+    const t = Math.sqrt(r());
+    const y = 462 + t * t * 250;
+    const x = i < 70 ? -100 + r() * 590 : (i % 2 ? -800 + r() * 700 : 490 + r() * 700);
+    const half = 5 + t * 9;
+    const amp = 1.2 + t * 2.6;
+    const n = 2 + Math.floor(r() * 3);
+    let d = `M${x.toFixed(1)} ${y.toFixed(1)} q${half / 2} ${(-amp).toFixed(1)} ${half.toFixed(1)} 0`;
+    for (let k = 1; k < n; k++) d += ` t${half.toFixed(1)} 0`;
+    el('path', {
+      d, fill: 'none', stroke: '#4F74C4', 'stroke-width': (0.8 + t * 1.2).toFixed(2),
+      'stroke-linecap': 'round', opacity: (0.35 + t * 0.35).toFixed(2),
     }, g);
-    l.style.animationDuration = (2.4 + r() * 3.5).toFixed(1) + 's';
-    l.style.animationDelay = (-r() * 6).toFixed(1) + 's';
   }
 }
 
