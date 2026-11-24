@@ -97,7 +97,8 @@ export function startBillboard(productsG, logosG, base) {
     const g = el('g', { class: 'billboard-fade' }, productsG);
     g.style.opacity = p === 0 ? 1 : 0;
     PRODUCTS.slice(p * PER_PAGE, p * PER_PAGE + PER_PAGE).forEach((f, k) => {
-      const im = img(PRODUCT_BASE + f, 12 + k * 50, 184, 46, 80);
+      const im = img(PRODUCT_BASE + f, 12 + k * 50 + 7, 198, 36, 58);
+      im.setAttribute('preserveAspectRatio', 'xMidYMax meet');
       im.addEventListener('error', () => im.remove());
       g.appendChild(im);
     });
