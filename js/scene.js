@@ -1,6 +1,7 @@
 const NS = 'http://www.w3.org/2000/svg';
 const PRODUCTS = ['1.png', '2.png', '3.png', '4.png', '5.png', '6.png'];
-const LOGOS = ['tcc.png', 'chaokoh.png', 'maeploy.png'];
+const LOGOS = ['tcc.png', 'chaokoh.png', 'maeploy.png', 'yoddoi.png'];
+const LOGO_BASE = 'assets/logos/';
 const PER_PAGE = 3;
 const PAGE_MS = 4000;
 
@@ -103,9 +104,7 @@ export function startBillboard(productsG, logosG, base) {
   }
   const w = 150 / LOGOS.length;
   LOGOS.forEach((l, i) => {
-    const tcc = l === 'tcc.png';
-    const im = img(base + 'logos/' + l, 10 + i * w + (tcc ? 14 : 6), 274, tcc ? 24 : w - 12, 18);
-    if (tcc) im.setAttribute('preserveAspectRatio', 'xMinYMid slice');
+    const im = img(LOGO_BASE + l, 10 + i * w + 3, 274, w - 6, 18);
     im.addEventListener('error', () => im.remove());
     logosG.appendChild(im);
   });
