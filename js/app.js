@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=25';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=25';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=25';
-import { launchFireworks, ambientFireworks } from './fireworks.js?v=25';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=26';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=27';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=27';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=27';
+import { launchFireworks, ambientFireworks } from './fireworks.js?v=27';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=27';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -131,10 +131,15 @@ function makeNode(k, isNew) {
   el.type = 'button';
   el.className = 'k' + (k.id === mine ? ' mine' : '') + (isNew ? ' new' : '');
   el.style.left = Math.min(92, Math.max(6, p.x)) + '%';
+  el.dataset.id = k.id;
   el.style.top = ((p.y - 62) / 33) * 100 + '%';
   el.style.zIndex = k.id === mine ? '40' : String(10 + p.lane);
-  el.style.setProperty('--dx', (hashNum(k.id, 2) ? 1 : -1) * (20 + hashNum(k.id + 'x', 40)) + 'px');
-  el.style.setProperty('--dur', 30 + hashNum(k.id + 'd', 40) + 's');
+  const x = Math.min(92, Math.max(6, p.x));
+  const toCenter = x < 50 ? 1 : -1;
+  el.style.setProperty('--dx', toCenter * (12 + hashNum(k.id + 'x', 20)) + 'vw');
+  el.style.setProperty('--dur', 40 + hashNum(k.id + 'd', 40) + 's');
+  el.style.setProperty('--from', (x < 50 ? -1 : 1) * 70 + 'vw');
+  el.style.setProperty('--out', (x < 50 ? -1 : 1) * 80 + 'vw');
   el.style.setProperty('--bob', (2.6 + hashNum(k.id + 'b', 20) / 10) + 's');
   el.style.setProperty('--delay', -hashNum(k.id + 'l', 30) + 's');
   el.setAttribute('aria-label', 'กระทงของ ' + k.name);
@@ -155,25 +160,53 @@ function makeNode(k, isNew) {
   return el;
 }
 
-const MAX_VISIBLE = () => (innerWidth < 700 ? 50 : 120);
-function visibleIds() {
-  const ids = new Set(list.slice(-MAX_VISIBLE()).map(k => k.id));
-  if (mine && list.some(k => k.id === mine)) ids.add(mine);
-  return ids;
-}
+const MAX_VISIBLE = () => (innerWidth < 700 ? 30 : 120);
+let rotateIdx = 0;
 
-function render(added, animate) {
-  const river = $('river');
-  const keep = visibleIds();
-  added = added.filter(k => keep.has(k.id));
-  for (const [id, el] of nodes) if (!keep.has(id)) { el.remove(); nodes.delete(id); }
-  for (const k of added) {
-    if (nodes.has(k.id)) continue;
-    const el = makeNode(k, animate);
-    nodes.set(k.id, el);
-    river.appendChild(el);
+function showK(k, animate) {
+  if (nodes.has(k.id)) return;
+  const el = makeNode(k, animate);
+  nodes.set(k.id, el);
+  $('river').appendChild(el);
+}
+function leaveK(id) {
+  const el = nodes.get(id);
+  if (!el) return;
+  nodes.delete(id);
+  el.style.setProperty('--cur', getComputedStyle(el).transform.replace('none', 'translateX(0)'));
+  el.classList.remove('new');
+  el.classList.add('leave');
+  setTimeout(() => el.remove(), 2800);
+}
+function trim() {
+  for (const id of [...nodes.keys()]) {
+    if (nodes.size <= MAX_VISIBLE()) break;
+    if (id !== mine) leaveK(id);
   }
 }
+
+// added: krathongs to bring on screen; removed ones (hidden/deleted) vanish at once
+function render(added, animate) {
+  const alive = new Set(list.map(k => k.id));
+  for (const [id, el] of nodes) if (!alive.has(id)) { el.remove(); nodes.delete(id); }
+  for (const k of added) showK(k, animate);
+  trim();
+}
+
+// when there are more krathongs than fit, swap one out and one in every 7 s
+function rotate() {
+  if (list.length <= nodes.size || document.hidden) return;
+  for (let tries = 0; tries < list.length; tries++) {
+    rotateIdx = (rotateIdx + 1) % list.length;
+    const k = list[rotateIdx];
+    if (nodes.has(k.id)) continue;
+    const oldest = [...nodes.keys()].find(id => id !== mine);
+    if (oldest) leaveK(oldest);
+    showK(k, true);
+    return;
+  }
+}
+setInterval(rotate, 7000);
 
 function setCount(n) { $('count').textContent = n.toLocaleString('th-TH'); }
 
@@ -191,7 +224,10 @@ async function fullLoad() {
   const fresh = data.reverse();
   list = fresh;
   if (fresh.length) lastSeen = fresh[fresh.length - 1].created_at;
-  render(fresh, false);
+  const first = fresh.slice(-MAX_VISIBLE());
+  const m = mine && fresh.find(k => k.id === mine);
+  if (m && !first.includes(m)) first.push(m);
+  render(first, false);
   setCount(count ?? fresh.length);
 }
 
