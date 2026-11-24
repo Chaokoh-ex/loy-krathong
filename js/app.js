@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=17';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=17';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=17';
-import { launchFireworks, ambientFireworks } from './fireworks.js?v=17';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights } from './scene.js?v=17';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=18';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=18';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=18';
+import { launchFireworks, ambientFireworks } from './fireworks.js?v=18';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights } from './scene.js?v=18';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -265,7 +265,24 @@ $('form').addEventListener('submit', async e => {
   setCount(Number($('count').textContent.replace(/\D/g, '')) + r.added.length);
   const el = nodes.get(mine);
   if (el) { fxAt(el, { count: 4, size: 1.1 }); setTimeout(() => fxAt(el, { count: 3, size: 1 }), 1600); }
+  setTimeout(showBless, 1500);
 });
+
+// ---------- blessing ----------
+let blessTimer = 0;
+function showBless() {
+  const b = $('bless');
+  b.hidden = false;
+  b.classList.remove('out');
+  clearTimeout(blessTimer);
+  blessTimer = setTimeout(hideBless, 6000);
+}
+function hideBless() {
+  const b = $('bless');
+  b.classList.add('out');
+  setTimeout(() => { b.hidden = true; b.classList.remove('out'); }, 500);
+}
+$('bless').addEventListener('click', () => { clearTimeout(blessTimer); hideBless(); });
 
 // ---------- popup ----------
 function openPop(k) {
