@@ -107,8 +107,9 @@ export function startBillboard(productsG, logosG, base) {
   }
   const w = 150 / LOGOS.length;
   LOGOS.forEach((l, i) => {
-    const im = img(base + 'logos/' + l, 10 + i * w + 6, 274, w - 12, 18);
-    if (l === 'tcc.png') im.setAttribute('preserveAspectRatio', 'xMinYMid slice');
+    const tcc = l === 'tcc.png';
+    const im = img(base + 'logos/' + l, 10 + i * w + (tcc ? 14 : 6), 274, tcc ? 24 : w - 12, 18);
+    if (tcc) im.setAttribute('preserveAspectRatio', 'xMinYMid slice');
     im.addEventListener('error', () => im.remove());
     logosG.appendChild(im);
   });
