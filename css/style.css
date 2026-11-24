@@ -128,3 +128,9 @@ body.screen #cta,body.screen #counter{display:none}
 @keyframes glowPulse{0%,100%{fill-opacity:.16}50%{fill-opacity:.32}}
 body.lite #scene .bulbs circle,body.lite #scene .shim,body.lite #scene .flicker{animation:none}
 body.lite .k .flame{animation:none}
+#scene .wheel{transform-box:fill-box;transform-origin:center;animation:spin 40s linear infinite}
+#scene .boat.cruise{animation:sailR 95s linear infinite;animation-delay:-30s}
+#scene .boat.tail{animation:sailL 55s linear infinite;animation-delay:-12s}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes sailR{from{transform:translateX(-1000px)}to{transform:translateX(1400px)}}
+@keyframes sailL{from{transform:translateX(1400px) scaleX(-1)}to{transform:translateX(-1000px) scaleX(-1)}}

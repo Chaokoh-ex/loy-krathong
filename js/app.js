@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=22';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=22';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=22';
-import { launchFireworks, ambientFireworks } from './fireworks.js?v=22';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=22';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=23';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=23';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=23';
+import { launchFireworks, ambientFireworks } from './fireworks.js?v=23';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights, drawTreeLights, drawBankPeople } from './scene.js?v=23';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -33,7 +33,16 @@ $('logo').src = 'assets/logos/tcc.png';
 $('logo').onerror = () => $('logo').remove();
 
 const ORIG = {};
-for (const id of ['billboard', 'building', 'tree', 'reflect', 'moon', 'moonReflect', 'palmA', 'palmB', 'bridge']) ORIG[id] = $(id).getAttribute('transform');
+for (const id of ['billboard', 'building', 'tree', 'reflect', 'moon', 'moonReflect', 'palmA', 'palmB', 'bridge'])
+  ORIG[id] = $(id).getAttribute('transform');
+function showEdge(on, x0, W) {
+  $('fair').style.display = on ? '' : 'none';
+  $('goldenMount').style.display = on ? '' : 'none';
+  if (on) {
+    setT('fair', `translate(${(x0 + W * 0.065).toFixed(1)} 446) scale(1.15)`);
+    setT('goldenMount', `translate(${(x0 + W * 0.93).toFixed(1)} 446) scale(1.15)`);
+  }
+}
 function setT(id, t) { t ? $(id).setAttribute('transform', t) : $(id).removeAttribute('transform'); }
 
 function fitScene() {
@@ -58,8 +67,10 @@ function fitScene() {
       setT('palmA', `translate(${(x0 + W * 0.405).toFixed(1)} 446) scale(.9)`);
       setT('palmB', `translate(${(x0 + W * 0.93).toFixed(1)} 446)`);
       setT('bridge', `translate(${(x0 + W * 0.47 - 120).toFixed(1)} 446) scale(1.15) translate(0 -446)`);
+      showEdge(true, x0, W);
     } else {
       for (const id in ORIG) setT(id, ORIG[id]);
+      showEdge(false);
       setT('moon', 'translate(470 120)');
       setT('moonReflect', 'translate(470 0)');
     }
@@ -68,6 +79,7 @@ function fitScene() {
     svg.setAttribute('viewBox', `${x0.toFixed(1)} -60 ${W.toFixed(1)} ${H}`);
     svg.setAttribute('preserveAspectRatio', 'xMidYMax slice');
     for (const id in ORIG) setT(id, ORIG[id]);
+    showEdge(false);
     const bx = x0 + W * 0.66;
     setT('building', `translate(${bx.toFixed(1)} 446) scale(1.32) translate(-243 -446)`);
     setT('tree', `translate(${(bx + 104).toFixed(1)} 446) scale(1.2) translate(-320 -446)`);
