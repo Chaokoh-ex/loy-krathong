@@ -104,3 +104,8 @@ body.screen #cta,body.screen #counter{display:none}
 @keyframes cloud{from{transform:translateX(-300px)}to{transform:translateX(700px)}}
 @keyframes shoot{0%{opacity:0;translate:0 0}10%{opacity:1}100%{opacity:0;translate:-140px 55px}}
 @media (prefers-reduced-motion:reduce){#scene *{animation:none!important}}
+#scene .walker{animation:walk 9s ease-in-out infinite}
+#scene .walker.w2{animation-duration:12s;animation-delay:-4s}#scene .walker.w3{animation-duration:10s;animation-delay:-7s}
+#scene .wave .arm{transform-box:fill-box;transform-origin:0% 100%;animation:waveArm 1.2s ease-in-out infinite}
+@keyframes walk{0%,100%{transform:translateX(0)}45%,55%{transform:translateX(30px)}}
+@keyframes waveArm{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(25deg)}}

@@ -1,5 +1,6 @@
 const NS = 'http://www.w3.org/2000/svg';
-const PRODUCTS = ['1.png', '2.png', '3.png', '4.png', '5.png', '6.png'];
+const PRODUCTS = Array.from({ length: 12 }, (_, i) => `p${String(i + 1).padStart(2, '0')}.webp`);
+const PRODUCT_BASE = 'assets/products/';
 const LOGOS = ['tcc.png', 'chaokoh.png', 'maeploy.png', 'yoddoi.png'];
 const LOGO_BASE = 'assets/logos/';
 const PER_PAGE = 3;
@@ -96,7 +97,7 @@ export function startBillboard(productsG, logosG, base) {
     const g = el('g', { class: 'billboard-fade' }, productsG);
     g.style.opacity = p === 0 ? 1 : 0;
     PRODUCTS.slice(p * PER_PAGE, p * PER_PAGE + PER_PAGE).forEach((f, k) => {
-      const im = img(base + 'products/' + f, 12 + k * 50, 184, 46, 80);
+      const im = img(PRODUCT_BASE + f, 12 + k * 50, 184, 46, 80);
       im.addEventListener('error', () => im.remove());
       g.appendChild(im);
     });

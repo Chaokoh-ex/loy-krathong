@@ -26,10 +26,33 @@ function burst(x, y, n, size) {
   }
 }
 
-export function launchFireworks(canvas, x, y, { count = 3, size = 1 } = {}) {
+function prep(canvas) {
   cv = canvas; ctx = canvas.getContext('2d');
   const dpr = devicePixelRatio || 1;
-  if (cv.width !== innerWidth * dpr) { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
+  if (cv.width !== innerWidth * dpr || cv.height !== innerHeight * dpr) { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
+}
+
+export function skyBurst(canvas, x, y, size = 1) {
+  prep(canvas);
+  burst(x, y, Math.round(60 * size), size);
+  if (!running) { running = true; requestAnimationFrame(frame); }
+}
+
+export function ambientFireworks(canvas) {
+  const one = () => {
+    if (!document.hidden) {
+      const n = Math.random() < 0.3 ? 3 : 1;
+      for (let i = 0; i < n; i++) {
+        setTimeout(() => skyBurst(canvas, innerWidth * (0.12 + Math.random() * 0.76), innerHeight * (0.12 + Math.random() * 0.26), (innerWidth > 700 ? 1.3 : 0.95) + Math.random() * 0.7), i * 350);
+      }
+    }
+    setTimeout(one, 3500 + Math.random() * 5000);
+  };
+  setTimeout(one, 1500);
+}
+
+export function launchFireworks(canvas, x, y, { count = 3, size = 1 } = {}) {
+  prep(canvas);
   for (let i = 0; i < count; i++) {
     setTimeout(() => {
       const bx = x + (Math.random() - 0.5) * 160 * size;

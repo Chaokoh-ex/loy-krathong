@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=15';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=15';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=15';
-import { launchFireworks } from './fireworks.js?v=15';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights } from './scene.js?v=15';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=16';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=16';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=16';
+import { launchFireworks, ambientFireworks } from './fireworks.js?v=16';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights } from './scene.js?v=16';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -23,6 +23,7 @@ drawLanterns($('lanterns'));
 drawWaves($('waves'));
 drawBridgeLights(document.querySelector('#bridge .bridgeLights'));
 shootingStar($('shoot'));
+ambientFireworks($('fx'));
 startBillboard($('bbProducts'), $('bbLogos'), ASSET_BASE);
 $('logo').src = 'assets/logos/tcc.png';
 $('logo').onerror = () => $('logo').remove();
