@@ -81,7 +81,8 @@ body.screen #cta,body.screen #counter{display:none}
 #scene .blink{animation:blink 1.6s steps(1) infinite}
 #scene .blink.b2{animation-delay:-.8s}
 #scene .flicker{animation:twinkle 5s ease-in-out infinite}
-#scene .wave{animation-name:wave;animation-timing-function:linear;animation-iteration-count:infinite}
+#scene .swell{animation-name:swell;animation-timing-function:linear;animation-iteration-count:infinite}
+#scene .glint{opacity:0;animation:glint 4s ease-in-out infinite}
 #scene .shim{transform-box:fill-box;transform-origin:center;animation:shim 3s ease-in-out infinite}
 #scene .shim.s2{animation-delay:-1s}#scene .shim.s3{animation-delay:-2s}
 #scene .sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 5s ease-in-out infinite}
@@ -95,7 +96,8 @@ body.screen #cta,body.screen #counter{display:none}
 #shoot.go{animation:shoot 1.1s ease-out}
 @keyframes twinkle{0%,100%{opacity:1}50%{opacity:.25}}
 @keyframes blink{0%{opacity:1}50%{opacity:.15}}
-@keyframes wave{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+@keyframes swell{from{transform:translateX(0)}to{transform:translateX(calc(var(--per,200px) * -1))}}
+@keyframes glint{0%,100%{opacity:0;transform:translateX(0)}40%{opacity:.85}60%{opacity:.6}80%{opacity:0;transform:translateX(6px)}}
 @keyframes shim{0%,100%{transform:scaleX(1);opacity:.75}50%{transform:scaleX(.9);opacity:1}}
 @keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
 @keyframes rise{0%{transform:translate(0,0);opacity:0}6%{opacity:1}85%{opacity:.9}100%{transform:translate(var(--dx,30px),-560px);opacity:0}}
