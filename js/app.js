@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=11';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=11';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=11';
-import { launchFireworks } from './fireworks.js?v=11';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar } from './scene.js?v=11';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=12';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=12';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=12';
+import { launchFireworks } from './fireworks.js?v=12';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar } from './scene.js?v=12';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -26,19 +26,35 @@ startBillboard($('bbProducts'), $('bbLogos'), ASSET_BASE);
 $('logo').src = ASSET_BASE + 'logos/tcc.png';
 $('logo').onerror = () => $('logo').remove();
 
+const ORIG = {};
+for (const id of ['billboard', 'building', 'tree', 'reflect', 'moon']) ORIG[id] = $(id).getAttribute('transform');
+function setT(id, t) { t ? $(id).setAttribute('transform', t) : $(id).removeAttribute('transform'); }
+
 function fitScene() {
   const svg = $('scene');
   const aspect = innerWidth / innerHeight;
   const wide = aspect > 590 / 844;
   if (wide) {
-    const y0 = 36, H = 684, W = H * aspect;
-    svg.setAttribute('viewBox', `${(195 - W / 2).toFixed(1)} ${y0} ${W.toFixed(1)} ${H}`);
+    const y0 = 36, H = 684, W = H * aspect, x0 = 195 - W / 2;
+    svg.setAttribute('viewBox', `${x0.toFixed(1)} ${y0} ${W.toFixed(1)} ${H}`);
     svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
-    $('moon').setAttribute('transform', 'translate(470 120)');
+    const split = aspect > 1.15;
+    if (split) {
+      const left = x0 + W * 0.24, right = x0 + W * 0.7;
+      const bs = 1.3, hs = 1.34;
+      setT('billboard', `translate(${left.toFixed(1)} 446) scale(${bs.toFixed(2)}) translate(-85 -446)`);
+      setT('building', `translate(${right.toFixed(1)} 446) scale(${hs.toFixed(2)}) translate(-243 -446)`);
+      setT('tree', `translate(${(right + 105 * hs / 1.32).toFixed(1)} 446) scale(${(1.2 * hs / 1.32).toFixed(2)}) translate(-320 -446)`);
+      setT('reflect', `translate(${right.toFixed(1)} 0) scale(${(hs / 1.32).toFixed(2)} 1) translate(-252 0)`);
+      setT('moon', `translate(${(x0 + W * 0.47 - 66).toFixed(1)} 110)`);
+    } else {
+      for (const id in ORIG) setT(id, ORIG[id]);
+      setT('moon', 'translate(470 120)');
+    }
   } else {
     svg.setAttribute('viewBox', '-100 -124 590 844');
     svg.setAttribute('preserveAspectRatio', 'xMidYMax slice');
-    $('moon').removeAttribute('transform');
+    for (const id in ORIG) setT(id, ORIG[id]);
   }
   const m = svg.getScreenCTM();
   if (!m) return;
