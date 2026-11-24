@@ -61,20 +61,17 @@ export function drawLanterns(g) {
 }
 
 export function drawWaves(g) {
-  const r = rng(31);
-  for (let i = 0; i < 200; i++) {
-    const t = Math.sqrt(r());
-    const y = 462 + t * t * 250;
-    const x = i < 70 ? -100 + r() * 590 : (i % 2 ? -800 + r() * 700 : 490 + r() * 700);
-    const half = 5 + t * 9;
-    const amp = 1.2 + t * 2.6;
-    const n = 2 + Math.floor(r() * 3);
-    let d = `M${x.toFixed(1)} ${y.toFixed(1)} q${half / 2} ${(-amp).toFixed(1)} ${half.toFixed(1)} 0`;
-    for (let k = 1; k < n; k++) d += ` t${half.toFixed(1)} 0`;
-    el('path', {
-      d, fill: 'none', stroke: '#4F74C4', 'stroke-width': (0.8 + t * 1.2).toFixed(2),
-      'stroke-linecap': 'round', opacity: (0.35 + t * 0.35).toFixed(2),
-    }, g);
+  const bands = 8;
+  for (let i = 0; i < bands; i++) {
+    const t = i / (bands - 1);
+    const y = 460 + t * t * 230 + i * 5;
+    const half = 60 + t * 80;
+    const amp = 2 + t * 5;
+    const off = (i % 3) * half * 0.6;
+    let d = `M${(-1000 - off).toFixed(1)} ${y.toFixed(1)} q${half / 2} ${(-amp).toFixed(1)} ${half} 0`;
+    for (let x = -1000 - off + half; x < 1400; x += half) d += ` t${half} 0`;
+    d += ` L1400 ${(y + 34 + t * 34).toFixed(1)} L-1100 ${(y + 34 + t * 34).toFixed(1)} Z`;
+    el('path', { d, fill: i % 2 ? '#1E407F' : '#0B1C48', 'fill-opacity': (0.4 + t * 0.25).toFixed(2) }, g);
   }
 }
 

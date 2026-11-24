@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=9';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=9';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=9';
-import { launchFireworks } from './fireworks.js?v=9';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar } from './scene.js?v=9';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=10';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=10';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=10';
+import { launchFireworks } from './fireworks.js?v=10';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar } from './scene.js?v=10';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
