@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=16';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=16';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=16';
-import { launchFireworks, ambientFireworks } from './fireworks.js?v=16';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights } from './scene.js?v=16';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=17';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=17';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=17';
+import { launchFireworks, ambientFireworks } from './fireworks.js?v=17';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights } from './scene.js?v=17';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -85,6 +85,29 @@ function fitScene() {
 fitScene();
 addEventListener('resize', fitScene);
 
+// ---------- hover tooltip ----------
+const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+let tipEl = null, tipRaf = 0;
+function placeTip() {
+  if (!tipEl) return;
+  const r = tipEl.getBoundingClientRect(), t = $('tip');
+  const w = t.offsetWidth, h = t.offsetHeight;
+  const x = Math.min(innerWidth - w - 8, Math.max(8, r.left + r.width / 2 - w / 2));
+  const y = Math.max(8, r.top - h - 10);
+  t.style.transform = `translate(${x}px, ${y}px)`;
+  tipRaf = requestAnimationFrame(placeTip);
+}
+function showTip(k, el) {
+  const t = $('tip');
+  t.querySelector('.tw').textContent = k.wish;
+  t.querySelector('.tn').textContent = '— ' + k.name + (k.id === mine ? ' (ของฉัน)' : '');
+  t.hidden = false;
+  tipEl = el;
+  cancelAnimationFrame(tipRaf);
+  placeTip();
+}
+function hideTip() { $('tip').hidden = true; tipEl = null; cancelAnimationFrame(tipRaf); }
+
 // ---------- river ----------
 function hashNum(s, mod) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h) % mod; }
 
@@ -110,7 +133,11 @@ function makeNode(k, isNew) {
     tag.className = 'tag'; tag.textContent = 'ของฉัน';
     el.appendChild(tag);
   }
-  el.addEventListener('click', () => openPop(k));
+  el.addEventListener('click', () => { hideTip(); openPop(k); });
+  if (canHover) {
+    el.addEventListener('mouseenter', () => showTip(k, el));
+    el.addEventListener('mouseleave', hideTip);
+  }
   return el;
 }
 

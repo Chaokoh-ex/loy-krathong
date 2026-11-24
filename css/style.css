@@ -109,3 +109,7 @@ body.screen #cta,body.screen #counter{display:none}
 #scene .wave .arm{transform-box:fill-box;transform-origin:0% 100%;animation:waveArm 1.2s ease-in-out infinite}
 @keyframes walk{0%,100%{transform:translateX(0)}45%,55%{transform:translateX(30px)}}
 @keyframes waveArm{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(25deg)}}
+#tip{position:fixed;left:0;top:0;z-index:25;max-width:260px;background:#0E1A46f2;border:1px solid #F2B54466;border-radius:12px;padding:8px 12px;pointer-events:none;box-shadow:0 6px 20px #0008}
+#tip .tw{font-family:'Mitr',sans-serif;font-size:15px;line-height:1.45;word-break:break-word}
+#tip .tn{font-size:12px;color:#F2C46B;margin-top:3px;word-break:break-word}
+.k{cursor:pointer}
