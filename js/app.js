@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=12';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=12';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=12';
-import { launchFireworks } from './fireworks.js?v=12';
-import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar } from './scene.js?v=12';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=13';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=13';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=13';
+import { launchFireworks } from './fireworks.js?v=13';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar, drawBridgeLights } from './scene.js?v=13';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -21,13 +21,14 @@ drawStars($('stars'));
 drawCityWindows($('cityWindows'));
 drawLanterns($('lanterns'));
 drawWaves($('waves'));
+drawBridgeLights(document.querySelector('#bridge .bridgeLights'));
 shootingStar($('shoot'));
 startBillboard($('bbProducts'), $('bbLogos'), ASSET_BASE);
 $('logo').src = ASSET_BASE + 'logos/tcc.png';
 $('logo').onerror = () => $('logo').remove();
 
 const ORIG = {};
-for (const id of ['billboard', 'building', 'tree', 'reflect', 'moon']) ORIG[id] = $(id).getAttribute('transform');
+for (const id of ['billboard', 'building', 'tree', 'reflect', 'moon', 'moonReflect', 'palmA', 'palmB', 'bridge']) ORIG[id] = $(id).getAttribute('transform');
 function setT(id, t) { t ? $(id).setAttribute('transform', t) : $(id).removeAttribute('transform'); }
 
 function fitScene() {
@@ -42,14 +43,20 @@ function fitScene() {
     if (split) {
       const left = x0 + W * 0.24, right = x0 + W * 0.7;
       const bs = 1.3, hs = 1.34;
-      setT('billboard', `translate(${left.toFixed(1)} 446) scale(${bs.toFixed(2)}) translate(-85 -446)`);
+      setT('billboard', `translate(${left.toFixed(1)} 526) scale(${bs.toFixed(2)}) translate(-85 -446)`);
       setT('building', `translate(${right.toFixed(1)} 446) scale(${hs.toFixed(2)}) translate(-243 -446)`);
       setT('tree', `translate(${(right + 105 * hs / 1.32).toFixed(1)} 446) scale(${(1.2 * hs / 1.32).toFixed(2)}) translate(-320 -446)`);
       setT('reflect', `translate(${right.toFixed(1)} 0) scale(${(hs / 1.32).toFixed(2)} 1) translate(-252 0)`);
-      setT('moon', `translate(${(x0 + W * 0.47 - 66).toFixed(1)} 110)`);
+      const mdx = x0 + W * 0.47 - 66;
+      setT('moon', `translate(${mdx.toFixed(1)} 110)`);
+      setT('moonReflect', `translate(${mdx.toFixed(1)} 0)`);
+      setT('palmA', `translate(${(x0 + W * 0.405).toFixed(1)} 446) scale(.9)`);
+      setT('palmB', `translate(${(x0 + W * 0.93).toFixed(1)} 446)`);
+      setT('bridge', `translate(${(x0 + W * 0.47 - 120).toFixed(1)} 446) scale(1.15) translate(0 -446)`);
     } else {
       for (const id in ORIG) setT(id, ORIG[id]);
       setT('moon', 'translate(470 120)');
+      setT('moonReflect', 'translate(470 0)');
     }
   } else {
     svg.setAttribute('viewBox', '-100 -124 590 844');

@@ -115,3 +115,12 @@ export function startBillboard(productsG, logosG, base) {
     pages.forEach((g, j) => (g.style.opacity = j === i ? 1 : 0));
   }, PAGE_MS);
 }
+
+export function drawBridgeLights(g) {
+  for (let x = -54; x < 300; x += 12) {
+    const c = el('circle', { cx: x, cy: 409, r: 1.3 }, g);
+    c.classList.add('twinkle');
+    c.style.animationDuration = '2.6s';
+    c.style.animationDelay = (-(x + 60) / 40).toFixed(2) + 's';
+  }
+}
