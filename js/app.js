@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=3';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=3';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=3';
-import { launchFireworks } from './fireworks.js?v=3';
-import { drawStars, startBillboard } from './scene.js?v=3';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=4';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=4';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=4';
+import { launchFireworks } from './fireworks.js?v=4';
+import { drawStars, startBillboard } from './scene.js?v=4';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -47,7 +47,7 @@ function makeNode(k, isNew) {
   el.className = 'k' + (k.id === mine ? ' mine' : '') + (isNew ? ' new' : '');
   el.style.left = Math.min(92, Math.max(6, p.x)) + '%';
   el.style.top = ((p.y - 62) / 33) * 100 + '%';
-  el.style.zIndex = String(10 + p.lane);
+  el.style.zIndex = k.id === mine ? '40' : String(10 + p.lane);
   el.style.setProperty('--dx', (hashNum(k.id, 2) ? 1 : -1) * (20 + hashNum(k.id + 'x', 40)) + 'px');
   el.style.setProperty('--dur', 30 + hashNum(k.id + 'd', 40) + 's');
   el.style.setProperty('--bob', (2.6 + hashNum(k.id + 'b', 20) / 10) + 's');
