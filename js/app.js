@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
-import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=5';
-import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=5';
-import { krathongSVG, STYLE_LABELS } from './krathong.js?v=5';
-import { launchFireworks } from './fireworks.js?v=5';
-import { drawStars, startBillboard } from './scene.js?v=5';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, ASSET_BASE, POLL_MS } from './config.js?v=6';
+import { STYLES, WISH_MAX, countChars, validateEntry, placeFor, mergeNew, getMine, setMine } from './logic.js?v=6';
+import { krathongSVG, STYLE_LABELS } from './krathong.js?v=6';
+import { launchFireworks } from './fireworks.js?v=6';
+import { drawStars, startBillboard, drawCityWindows, drawLanterns, drawWaves, shootingStar } from './scene.js?v=6';
 
 const $ = id => document.getElementById(id);
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
@@ -18,6 +18,10 @@ const nodes = new Map();
 
 // ---------- scene ----------
 drawStars($('stars'));
+drawCityWindows($('cityWindows'));
+drawLanterns($('lanterns'));
+drawWaves($('waves'));
+shootingStar($('shoot'));
 startBillboard($('bbProducts'), $('bbLogos'), ASSET_BASE);
 $('logo').src = ASSET_BASE + 'logos/tcc.png';
 $('logo').onerror = () => $('logo').remove();

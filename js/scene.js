@@ -1,53 +1,120 @@
 const NS = 'http://www.w3.org/2000/svg';
 const PRODUCTS = ['1.png', '2.png', '3.png', '4.png', '5.png', '6.png'];
 const LOGOS = ['tcc.png', 'chaokoh.png', 'maeploy.png'];
+const PER_PAGE = 3;
+const PAGE_MS = 4000;
 
-function img(href, x, y, w, h) {
-  const el = document.createElementNS(NS, 'image');
-  el.setAttribute('href', href);
-  el.setAttribute('x', x); el.setAttribute('y', y);
-  el.setAttribute('width', w); el.setAttribute('height', h);
-  el.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-  return el;
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+function rng(seed) {
+  let s = seed;
+  return () => (s = (s * 16807) % 2147483647) / 2147483647;
 }
 
 export function drawStars(g) {
-  let s = 7;
-  const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
-  for (let i = 0; i < 70; i++) {
-    const c = document.createElementNS(NS, 'circle');
-    c.setAttribute('cx', (rnd() * 390).toFixed(1));
-    c.setAttribute('cy', (rnd() * 300).toFixed(1));
-    c.setAttribute('r', (0.4 + rnd() * 1.1).toFixed(2));
-    c.setAttribute('opacity', (0.4 + rnd() * 0.6).toFixed(2));
-    g.appendChild(c);
+  const r = rng(7);
+  for (let i = 0; i < 90; i++) {
+    const c = el('circle', {
+      cx: (-100 + r() * 590).toFixed(1), cy: (-120 + r() * 400).toFixed(1),
+      r: (0.4 + r() * 1.1).toFixed(2), opacity: (0.4 + r() * 0.6).toFixed(2),
+    }, g);
+    if (i % 4 === 0) { c.classList.add('twinkle'); c.style.animationDelay = (-r() * 4).toFixed(2) + 's'; }
   }
 }
 
+const FAR = [[-100, 270, 56, 176], [-40, 320, 46, 126], [10, 290, 40, 156], [60, 250, 54, 196], [118, 300, 40, 146],
+  [350, 240, 50, 206], [400, 300, 60, 146], [470, 260, 70, 186], [-160, 300, 50, 146], [-280, 340, 100, 106], [560, 330, 110, 116]];
+
+export function drawCityWindows(g) {
+  const r = rng(11);
+  for (const [x, y, w] of FAR) {
+    for (let wy = y + 8; wy < 432; wy += 12) {
+      for (let wx = x + 5; wx < x + w - 6; wx += 9) {
+        if (r() > 0.42) continue;
+        const on = r();
+        const rect = el('rect', { x: wx, y: wy, width: 4, height: 5, fill: on > 0.25 ? '#F7D28A' : '#9FB4FF', opacity: (0.35 + r() * 0.5).toFixed(2) }, g);
+        if (r() < 0.18) { rect.classList.add('twinkle'); rect.style.animationDuration = (2 + r() * 5).toFixed(1) + 's'; rect.style.animationDelay = (-r() * 6).toFixed(1) + 's'; }
+      }
+    }
+  }
+}
+
+export function drawLanterns(g) {
+  const r = rng(23);
+  for (let i = 0; i < 9; i++) {
+    const outer = el('g', { transform: `translate(${(-60 + r() * 520).toFixed(0)} ${(380 + r() * 60).toFixed(0)})` }, g);
+    const inner = el('g', { class: 'lantern' }, outer);
+    const s = 0.6 + r() * 0.7;
+    inner.style.setProperty('--dx', ((r() - 0.5) * 140).toFixed(0) + 'px');
+    inner.style.animationDuration = (26 + r() * 22).toFixed(1) + 's';
+    inner.style.animationDelay = (-r() * 40).toFixed(1) + 's';
+    const sc = el('g', { transform: `scale(${s.toFixed(2)})` }, inner);
+    el('circle', { cx: 0, cy: 0, r: 16, fill: 'url(#lanternGlow)' }, sc);
+    el('path', { d: 'M-5 -7 Q0 -10 5 -7 L4 6 Q0 8 -4 6 Z', fill: '#FF9F2E' }, sc);
+    el('path', { d: 'M-3 -5 Q0 -7 3 -5 L2.5 4 Q0 5.5 -2.5 4 Z', fill: '#FFD27A' }, sc);
+  }
+}
+
+export function drawWaves(g) {
+  const rows = 11;
+  for (let i = 0; i < rows; i++) {
+    const t = i / (rows - 1);
+    const y = 458 + t * t * 250 + i * 2;
+    const amp = 1.2 + t * 4;
+    const half = 20;
+    let d = `M-940 ${y.toFixed(1)} q${half / 2} ${(-amp).toFixed(1)} ${half} 0`;
+    for (let x = -940 + half; x < 1320; x += half) d += ` t${half} 0`;
+    const p = el('path', {
+      d, fill: 'none', stroke: i % 3 === 0 ? '#5F86D6' : '#3B5A9A',
+      'stroke-width': (0.7 + t * 1.6).toFixed(2), opacity: (0.35 + t * 0.35).toFixed(2), class: 'wave',
+    }, g);
+    p.style.animationDuration = (6 + (i % 4) * 2.5).toFixed(1) + 's';
+    if (i % 2) p.style.animationDirection = 'reverse';
+    p.style.strokeDasharray = i % 2 ? '26 14' : '60 20';
+  }
+}
+
+export function shootingStar(line) {
+  const go = () => {
+    const x = 120 + Math.random() * 300, y = -100 + Math.random() * 120;
+    line.setAttribute('transform', `translate(${x.toFixed(0)} ${y.toFixed(0)})`);
+    line.classList.remove('go'); void line.getBBox(); line.classList.add('go');
+    setTimeout(go, 7000 + Math.random() * 9000);
+  };
+  setTimeout(go, 3000);
+}
+
+function img(href, x, y, w, h) {
+  return el('image', { href, x, y, width: w, height: h, preserveAspectRatio: 'xMidYMid meet' });
+}
+
 export function startBillboard(productsG, logosG, base) {
-  const els = PRODUCTS.map(p => {
-    const el = img(base + 'products/' + p, 26, 236, 96, 72);
-    el.setAttribute('class', 'billboard-fade');
-    el.style.opacity = 0;
-    el.addEventListener('error', () => el.remove());
-    productsG.appendChild(el);
-    return el;
-  });
-  const w = 104 / LOGOS.length;
+  const pages = [];
+  for (let p = 0; p * PER_PAGE < PRODUCTS.length; p++) {
+    const g = el('g', { class: 'billboard-fade' }, productsG);
+    g.style.opacity = p === 0 ? 1 : 0;
+    PRODUCTS.slice(p * PER_PAGE, p * PER_PAGE + PER_PAGE).forEach((f, k) => {
+      const im = img(base + 'products/' + f, 12 + k * 50, 184, 46, 80);
+      im.addEventListener('error', () => im.remove());
+      g.appendChild(im);
+    });
+    pages.push(g);
+  }
+  const w = 150 / LOGOS.length;
   LOGOS.forEach((l, i) => {
-    const el = img(base + 'logos/' + l, 22 + i * w + 3, 318, w - 6, 18);
-    if (l === 'tcc.png') el.setAttribute('preserveAspectRatio', 'xMinYMid slice');
-    el.addEventListener('error', () => el.remove());
-    logosG.appendChild(el);
+    const im = img(base + 'logos/' + l, 10 + i * w + 6, 274, w - 12, 18);
+    if (l === 'tcc.png') im.setAttribute('preserveAspectRatio', 'xMinYMid slice');
+    im.addEventListener('error', () => im.remove());
+    logosG.appendChild(im);
   });
   let i = 0;
-  const live = () => els.filter(e => e.isConnected);
-  const show = () => {
-    const l = live();
-    if (!l.length) return;
-    l.forEach((e, j) => (e.style.opacity = j === i % l.length ? 1 : 0));
-    i++;
-  };
-  show();
-  setInterval(show, 3000);
+  setInterval(() => {
+    i = (i + 1) % pages.length;
+    pages.forEach((g, j) => (g.style.opacity = j === i ? 1 : 0));
+  }, PAGE_MS);
 }
