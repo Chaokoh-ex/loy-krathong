@@ -120,3 +120,8 @@ body.screen #cta,body.screen #counter{display:none}
 #bless.out{animation:blessOut .5s ease-in forwards}
 @keyframes blessIn{from{opacity:0;transform:translate(-50%,-40%) scale(.85)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 @keyframes blessOut{to{opacity:0;transform:translate(-50%,-56%) scale(.96)}}
+#palms .sway path{fill:#24461A;stroke:#4E8A33;stroke-width:.7}
+#palms .sway path:nth-child(2n){fill:#2F5A22}
+#scene .bankWave{transform-box:fill-box;transform-origin:0% 100%;animation:waveArm 1.3s ease-in-out infinite}
+#scene .candleGlow{animation:glowPulse 1.6s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{fill-opacity:.16}50%{fill-opacity:.32}}

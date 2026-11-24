@@ -125,3 +125,57 @@ export function drawBridgeLights(g) {
     c.style.animationDelay = (-(x + 60) / 40).toFixed(2) + 's';
   }
 }
+
+export function drawTreeLights(g) {
+  const r = rng(41);
+  const C = ['#FFE29A', '#FFD27A', '#FFF3C4', '#FFB3C7'];
+  for (let i = 0; i < 34; i++) {
+    const a = r() * Math.PI * 2, d = Math.sqrt(r());
+    const cx = 322 + Math.cos(a) * 52 * d, cy = 292 + Math.sin(a) * 30 * d;
+    const c = el('circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: (0.9 + r() * 0.8).toFixed(2), fill: C[i % 4], class: 'twinkle' }, g);
+    c.style.animationDuration = (1.2 + r() * 2.4).toFixed(1) + 's';
+    c.style.animationDelay = (-r() * 3).toFixed(1) + 's';
+  }
+}
+
+const INK = '#060918';
+function person(g, x, h, opts = {}) {
+  const p = el('g', { transform: `translate(${x} 447)` }, g);
+  const s = h / 26;
+  const b = el('g', { transform: `scale(${s.toFixed(2)})`, fill: INK }, p);
+  el('circle', { cx: 0, cy: -22.5, r: 3.2 }, b);
+  el('path', { d: 'M-4.6 -18 Q0 -20 4.6 -18 L5.4 -8 L3.6 -8 L3.2 0 L0.8 0 L0 -7 L-0.8 0 L-3.2 0 L-3.6 -8 L-5.4 -8 Z' }, b);
+  if (opts.dress) el('path', { d: 'M-4.6 -12 L4.6 -12 L6.5 -2 L-6.5 -2 Z' }, b);
+  if (opts.wave) {
+    const arm = el('path', { d: 'M4.2 -16.5 L9 -24', stroke: INK, 'stroke-width': 2.2, 'stroke-linecap': 'round', class: 'bankWave' }, b);
+    arm.style.animationDelay = (-x % 3) + 's';
+  }
+  return p;
+}
+function crouch(g, x, h) {
+  const p = el('g', { transform: `translate(${x} 447)` }, g);
+  const s = h / 26;
+  el('circle', { cx: 9 * s, cy: -3 * s, r: 9 * s, fill: '#FFB547', 'fill-opacity': '.22', class: 'candleGlow' }, p);
+  const b = el('g', { transform: `scale(${s.toFixed(2)})`, fill: INK }, p);
+  el('circle', { cx: 0, cy: -14.5, r: 3.2 }, b);
+  el('path', { d: 'M-4 -10.5 Q1 -12 4 -9 L7.5 -4 L6 -3 L3 -6 L3.5 0 L-5 0 L-6 -4 Z' }, b);
+  const k = el('g', { transform: 'translate(9 -1)' }, p.lastChild);
+  el('path', { d: 'M-3.5 0 L-2 -2.5 L0 -1 L2 -2.5 L3.5 0 Z', fill: '#3B6D11' }, k);
+  el('rect', { x: -0.4, y: -4.8, width: 0.8, height: 2.6, fill: '#FFF6E0' }, k);
+  el('circle', { cx: 0, cy: -5.4, r: 0.9, fill: '#FFC23D', class: 'twinkle' }, k);
+  return p;
+}
+
+export function drawBankPeople(g) {
+  const spots = [
+    ['c', -420, 22], ['p', -380, 26], ['p', -300, 25, { dress: true }], ['p', -292, 17],
+    ['c', -190, 22], ['p', -150, 26, { wave: true }],
+    ['p', -40, 25], ['p', -33, 24, { dress: true }],
+    ['c', 52, 21], ['p', 78, 25, { dress: true }], ['p', 86, 16],
+    ['p', 214, 26, { wave: true }], ['c', 236, 22],
+    ['p', 322, 25], ['p', 329, 24, { dress: true }],
+    ['c', 410, 22], ['p', 520, 26], ['p', 600, 25, { dress: true }], ['p', 608, 16],
+    ['c', 700, 22], ['p', 760, 26, { wave: true }], ['p', 860, 25],
+  ];
+  for (const [t, x, h, o] of spots) t === 'c' ? crouch(g, x, h * 1.7) : person(g, x, h * 1.7, o);
+}
