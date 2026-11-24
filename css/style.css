@@ -113,9 +113,10 @@ body.screen #cta,body.screen #counter{display:none}
 #tip .tw{font-family:'Mitr',sans-serif;font-size:15px;line-height:1.45;word-break:break-word}
 #tip .tn{font-size:12px;color:#F2C46B;margin-top:3px;word-break:break-word}
 .k{cursor:pointer}
-#bless{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);z-index:35;width:min(86vw,340px);text-align:center;background:#0E1A46ee;border:1.5px solid #F2B544;border-radius:20px;padding:20px 18px 18px;box-shadow:0 10px 40px #000a,0 0 40px #F2B54433;animation:blessIn .6s cubic-bezier(.2,1.4,.4,1);cursor:pointer}
+#bless{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);z-index:35;width:min(86vw,340px);text-align:center;background:#0B1538f7;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1.5px solid #F2B544;border-radius:20px;padding:18px 18px 20px;box-shadow:0 10px 40px #000a,0 0 40px #F2B54433;animation:blessIn .6s cubic-bezier(.2,1.4,.4,1);cursor:pointer}
 #bless img{height:40px;background:#fff;border-radius:8px;padding:3px 7px}
-#bless .b1{font-family:'Mitr',sans-serif;font-size:21px;line-height:1.4;margin-top:12px;color:#FFF3C4}
+#bless .bstar{color:#F2B544;font-size:18px;line-height:1}
+#bless .b1{font-family:'Mitr',sans-serif;font-size:22px;line-height:1.4;margin-top:8px;color:#FFF3C4}
 #bless .b2{font-family:'Mitr',sans-serif;font-size:15px;color:#F2C46B;margin-top:4px}
 #bless.out{animation:blessOut .5s ease-in forwards}
 @keyframes blessIn{from{opacity:0;transform:translate(-50%,-40%) scale(.85)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
